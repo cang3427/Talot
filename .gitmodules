@@ -1,0 +1,3 @@
+[submodule "Talot/vendor/eigen"]
+	path = Talot/vendor/eigen
+	url = https://gitlab.com/libeigen/eigen.git
