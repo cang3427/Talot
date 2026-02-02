@@ -5,7 +5,7 @@
 #include <iostream>
 
 int main() {
-	std::array<std::array<float, 4>, 4> transform = talot::getRotationTransform(std::numbers::pi_v<float> / 2, 0.0f, 0.0f);
+	std::array<std::array<float, 4>, 4> transform = talot::translate({0.3f, 2.3f, -1.1f});
 	for (const auto& row : transform) {
 		for (const auto& value : row) {
 			std::cout << value << " ";
