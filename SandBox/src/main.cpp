@@ -1,56 +1,62 @@
 #include "transform.h"
 
-#include <CLI/CLI.hpp>
 #include <array>
 #include <iostream>
 #include <numbers>
 
 #include "command.h"
 
-void printMatrix(const talot::Transform& mat) {
-    for (size_t i = 0; i < 4; i++) {
-        for (size_t j = 0; j < 4; j++)
-            std::cout << mat(i, j) << " ";
-        std::cout << "\n";
-    }
+#include "src/application.h"
+
+void printMatrix(const talot::Transform &mat) {
+  for (size_t i = 0; i < 4; i++) {
+    for (size_t j = 0; j < 4; j++)
+      std::cout << mat(i, j) << " ";
+    std::cout << "\n";
+  }
 }
 
-int main(int argc, char** argv) {
-    CLI::App app{ "Transform CLI" };
-    
+int main(int argc, char **argv) {
 
-    float angle = 0.0f;
-    std::array<float, 3> center{ 0.0f, 0.0f, 0.0f };
+  app::Application app({.name = "Transform CLI",
+                        .commandLineArgs = {.count = argc, .args = argv}});
 
-    auto* rotateXCmd = app.add_subcommand("rotateX", "Rotate about X axis");
+  app.run();
 
-    rotateXCmd->add_option("angle", angle, "Rotation angle in degrees")
-        ->required();
+  // CLI::App app{ "Transform CLI" };
 
-    rotateXCmd->add_option(
-        "--center",
-        center,
-        "Optional rotation center x y z (default: 0 0 0)"
-    );
+  // float angle = 0.0f;
+  // std::array<float, 3> center{ 0.0f, 0.0f, 0.0f };
 
-    rotateXCmd->callback([&]() {
-        talot::Vector rotationCenter{ center[0], center[1], center[2] };
+  // auto* rotateXCmd = app.add_subcommand("rotateX", "Rotate about X axis");
 
-        auto mat = talot::Transform::RotateX(
-            angle * std::numbers::pi_v<float> / 180.0f,
-            rotationCenter
-        );
+  // rotateXCmd->add_option("angle", angle, "Rotation angle in degrees")
+  //     ->required();
 
-        std::cout << "Resulting rotation matrix:\n";
-        printMatrix(mat);
-        });
+  // rotateXCmd->add_option(
+  //     "--center",
+  //     center,
+  //     "Optional rotation center x y z (default: 0 0 0)"
+  // );
 
-    try {
-        app.parse(argc, argv);
-    }
-    catch (const CLI::ParseError& e) {
-        return app.exit(e);
-    }
+  // rotateXCmd->callback([&]() {
+  //     talot::Vector rotationCenter{ center[0], center[1], center[2] };
 
-    return 0;
+  //     auto mat = talot::Transform::RotateX(
+  //         angle * std::numbers::pi_v<float> / 180.0f,
+  //         rotationCenter
+  //     );
+
+  //     std::cout << "Resulting rotation matrix:\n";
+  //     printMatrix(mat);
+  //     });
+
+  // try {
+  //     app.parse(argc, argv);
+  // }
+  // catch (const CLI::ParseError& e) {
+  //     return app.exit(e);
+  // }
+
+  // return 0;
 }
