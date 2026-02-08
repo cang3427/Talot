@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "command.h"
+
 namespace app {
 
 struct ApplicationCommandLineArgs {
