@@ -28,9 +28,13 @@ namespace app {
 
     class Application {
     public:
-        Application(const ApplicationSpecification& specification);
+        explicit Application(const ApplicationSpecification& specification);
+        virtual ~Application() = default;
 
         void run();
+
+        template <typename... Args>
+        void pushCommand(const Command<Args...>& command);
 
     private:
         ApplicationSpecification m_specification;
@@ -45,32 +49,32 @@ namespace app {
 
         template <typename T>
         static inline constexpr bool is_std_optional_v = is_std_optional<T>::value;
-
-        template <typename... Args>
-        void registerCommand(const Command<Args...>& command) {
-            auto* appCommand = m_app.add_subcommand(std::string(command.specification.name), std::string(command.specification.description));
-
-            m_commandArgsStore.push_back(std::tuple<Args...>{});
-            auto& args = std::any_cast<std::tuple<Args...> &>(m_commandArgsStore.back());
-
-			const auto& argSpecifications = command.specification.argSpecifications;
-            [&]<size_t... I>(std::index_sequence<I...>) {
-                (([&]() {
-                    auto* option = appCommand->add_option(
-                        std::string(std::get<I>(argSpecifications).name),
-                        std::get<I>(args),
-                        std::string(std::get<I>(argSpecifications).description)
-                    );
-
-                    if constexpr (!is_std_optional_v<std::tuple_element_t<I, std::tuple<Args...>>>) {
-                        option->required();
-                    }
-                    }()), ...);
-            }(std::make_index_sequence<sizeof...(Args)>{});
-
-            appCommand->callback([command, &args] () {
-                std::apply(command.callback, args);
-			});
-        }
     };
+
+    template <typename... Args>
+    void Application::pushCommand(const Command<Args...>& command) {
+
+        auto* appCommand = m_app.add_subcommand(std::string(command.specification.name), std::string(command.specification.description));
+
+        m_commandArgsStore.push_back(std::tuple<Args...>{});
+        auto& args = std::any_cast<std::tuple<Args...> &>(m_commandArgsStore.back());
+
+        const auto& argSpecifications = command.specification.argSpecifications;
+        [&] <size_t... I>(std::index_sequence<I...>) {
+            (([&]() {
+                auto* option = appCommand->add_option(
+                    std::string(std::get<I>(argSpecifications).name),
+                    std::get<I>(args),
+                    std::string(std::get<I>(argSpecifications).description)
+                );
+                if constexpr (!is_std_optional_v<std::tuple_element_t<I, std::tuple<Args...>>>) {
+                    option->required();
+                }
+                }()), ...);
+        }(std::make_index_sequence<sizeof...(Args)>{});
+
+        appCommand->callback([command, &args]() {
+            std::apply(command.callback, args);
+            });
+    }
 }
