@@ -107,6 +107,12 @@ namespace talot {
         m_impl->matrix *= other.m_impl->matrix;
     }
 
+    void Transform::transform(const Transform& transform) {
+        Transform result = transform;
+		result *= *this;
+       
+    }
+
     Transform operator*(Transform &&lhs,  Transform &&rhs) {
         Transform result(std::move(lhs));
         result *= rhs;

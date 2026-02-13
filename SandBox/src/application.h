@@ -8,6 +8,7 @@
 #include <optional>
 #include <tuple>
 #include <utility>
+#include <concepts>
 
 #include "command.h"
 
@@ -33,8 +34,9 @@ namespace app {
 
         void run();
 
-        template <typename... Args>
-        void pushCommand(const Command<Args...>& command);
+        template <typename Callback, typename... Args>
+        requires std::invocable<Callback, Args...>
+        void pushCommand(const CommandSpecification<Args...>& specification, Callback callback);
 
     private:
         ApplicationSpecification m_specification;
@@ -51,8 +53,9 @@ namespace app {
         static inline constexpr bool is_std_optional_v = is_std_optional<T>::value;
     };
 
-    template <typename... Args>
-    void Application::pushCommand(const Command<Args...>& command) {
+    template <typename Callback, typename... Args>
+    requires std::invocable<Callback, Args...>
+    void Application::pushCommand(const CommandSpecification<Args...>& specification, Callback callback) {
 
         auto* appCommand = m_app.add_subcommand(std::string(command.specification.name), std::string(command.specification.description));
 
