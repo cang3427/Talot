@@ -5,9 +5,9 @@
 
 namespace talot {
 
-    Vector s_axisX = {1.0f, 0.0f, 0.0f};
-    Vector s_axisY = {0.0f, 1.0f, 0.0f};
-    Vector s_axisZ = {0.0f, 0.0f, 1.0f};
+    static constexpr Vector s_axisX = {1.0f, 0.0f, 0.0f};
+    static constexpr Vector s_axisY = {0.0f, 1.0f, 0.0f};
+    static constexpr Vector s_axisZ = {0.0f, 0.0f, 1.0f};
 
     struct Transform::Impl {
         Eigen::Matrix4f matrix = Eigen::Matrix4f::Identity();
@@ -28,6 +28,15 @@ namespace talot {
     Transform::Transform() : m_impl(std::make_unique<Impl>()) {}
 
     Transform::~Transform() = default;
+
+	Transform::Transform(const Transform& other) : m_impl(std::make_unique<Impl>(*other.m_impl)) {}
+
+    Transform& Transform::operator=(const Transform& other) {
+        if (this != &other) {
+            m_impl = std::make_unique<Impl>(*other.m_impl);
+        }
+        return *this;
+	}
 
     Transform Transform::Rotate(float angle, Vector axis, Vector rotationCenter) {
         Transform transform;
@@ -60,15 +69,15 @@ namespace talot {
 	}
 
 	Transform Transform::ScaleX(float scale, Vector scaleCenter) {
-        return Scale(s_axisX, scaleCenter);
+        return Scale({.x = scale, .y = 1.0, .z = 1.0}, scaleCenter);
 	}
 
 	Transform Transform::ScaleY(float scale, Vector scaleCenter) {
-        return Scale(s_axisY, scaleCenter);
+        return Scale({.x = 1.0, .y = scale, .z = 1.0}, scaleCenter);
 	}
 
 	Transform Transform::ScaleZ(float scale, Vector scaleCenter) {
-        return Scale(s_axisZ, scaleCenter);
+        return Scale({.x = 1.0, .y = 1.0, .z = scale}, scaleCenter);
 	}
     
 	Transform Transform::Translate(Vector translationVector) {
@@ -95,6 +104,16 @@ namespace talot {
         return result;
     }
 
+    void Transform::transform(const Transform& transform) {
+        Transform result = transform;
+        result *= *this;
+        *this = std::move(result);
+    }
+
+    void Transform::invert() {
+		*this = Invert(*this);
+    }
+
     const float *Transform::data() const {
         return m_impl->matrix.data();   
     }
@@ -107,8 +126,8 @@ namespace talot {
         m_impl->matrix *= other.m_impl->matrix;
     }
 
-    Transform operator*(Transform &&lhs,  Transform &&rhs) {
-        Transform result(std::move(lhs));
+    Transform operator*(const Transform &lhs,  const Transform &rhs) {
+        Transform result = lhs;
         result *= rhs;
         return result;
     }

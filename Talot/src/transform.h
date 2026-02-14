@@ -16,10 +16,10 @@ namespace talot {
             Transform();
 
             ~Transform();
-            Transform(const Transform& other) = delete;
-            Transform& operator=(const Transform& other) = delete;
-            Transform(Transform&& other) noexcept = default;
-            Transform& operator=(Transform&& other) noexcept = default;
+            Transform(const Transform& other);
+            Transform& operator=(const Transform& other);
+            Transform(Transform&& other) = default;
+            Transform& operator=(Transform&& other) = default;
 
             static Transform Rotate(float angle, Vector axis, Vector rotationCenter = {});
             static Transform RotateX(float angle, Vector rotationCenter = {});
@@ -39,6 +39,10 @@ namespace talot {
 
             static Transform Invert(const Transform& transform);
             
+            void transform(const Transform& transform);
+
+            void invert();
+
             const float *data() const;
 
             void operator*=(const Transform& other);
@@ -52,5 +56,5 @@ namespace talot {
             
     };
 
-    Transform operator*(Transform&& lhs, const Transform&& rhs);
+    Transform operator*(const Transform& lhs, const Transform& rhs);
 }
