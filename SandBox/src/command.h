@@ -12,6 +12,8 @@ namespace app {
     struct CommandArgSpecification {
         std::string_view name;
         std::string_view description;
+        T defaultValue{};
+        bool required = false;
     };
 
     template <typename... Args> 
