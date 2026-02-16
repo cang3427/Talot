@@ -1,11 +1,9 @@
-# Binaries
-**/bin/
-bin-int/
+target
 
 # Visual Studio files and folder
 .vs/
-# **.slnx
-# **.vcxproj
+**.slnx
+**.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
 **.csproj
