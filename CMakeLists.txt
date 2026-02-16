@@ -36,9 +36,9 @@ file(GLOB_RECURSE TALOT_SOURCES
 
 add_library(Talot STATIC ${TALOT_SOURCES})
 
-target_include_directories(Talot PUBLIC
-    Talot/src
-    Talot/vendor/eigen
+target_include_directories(Talot
+    PUBLIC Talot/src
+    PRIVATE Talot/vendor/eigen
 )
 
 set_target_properties(Talot PROPERTIES
