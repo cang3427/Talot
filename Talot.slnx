@@ -1,0 +1,7 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+  </Configurations>
+  <Project Path="SandBox/SandBox.vcxproj" Id="1fe1c0c7-a0f9-4fa8-86d7-995afe189a26" />
+  <Project Path="Talot/Talot.vcxproj" Id="c49128ec-6a60-4478-8efc-af9b58606242" />
+</Solution>
