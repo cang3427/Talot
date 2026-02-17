@@ -1,0 +1,57 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 20,
+    "patch": 0
+  },
+
+  "configurePresets": [
+    {
+      "name": "base",
+      "hidden": true,
+      "generator": "Visual Studio 17 2022",
+      "architecture": "x64",
+      "binaryDir": "${sourceDir}/target",
+      "cacheVariables": {
+        "CMAKE_CONFIGURATION_TYPES": "Debug;Release;Dist"
+      }
+    },
+
+    {
+      "name": "debug",
+      "displayName": "Debug (VS2022 x64)",
+      "inherits": "base"
+    },
+
+    {
+      "name": "release",
+      "displayName": "Release (VS2022 x64)",
+      "inherits": "base"
+    },
+
+    {
+      "name": "dist",
+      "displayName": "Dist (VS2022 x64)",
+      "inherits": "base"
+    }
+  ],
+
+  "buildPresets": [
+    {
+      "name": "build-debug",
+      "configurePreset": "debug",
+      "configuration": "Debug"
+    },
+    {
+      "name": "build-release",
+      "configurePreset": "release",
+      "configuration": "Release"
+    },
+    {
+      "name": "build-dist",
+      "configurePreset": "dist",
+      "configuration": "Dist"
+    }
+  ]
+}
